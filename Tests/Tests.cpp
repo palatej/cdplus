@@ -6,6 +6,7 @@
 #include "sequence.h"
 #include "arima.h"
 #include "getf2.h"
+#include "getrs.h"
 
 #include "matrix.h"
 
@@ -52,23 +53,25 @@ int main() {
 	delete[] x;
 
 	LCPP::GETF2<double> getf2;
-	int m = 500, n = 500;
+	int m = 10, n = 20;
 	Matrix<double> A(m, n);
 	A.rand();
 
 	FastMatrix<double> a=A.all();
-	int* piv = new int[n];
+	int* piv = new int[m];
 	const auto start2 = std::chrono::steady_clock::now();
 	getf2(m, n, &a(0, 0), m, piv);
 	const auto end2 = std::chrono::steady_clock::now();
 	const auto int_ms2 = std::chrono::duration_cast<std::chrono::milliseconds>(end2 - start2);
 	std::cout << int_ms2.count() << "  " << std::endl;
 
-	//for (int i = 0; i < n; ++i) {
-	//	std::cout << piv[i] << std::endl;
-	//}
+	for (int i = 0; i < m; ++i) {
+		std::cout << piv[i] << std::endl;
+	}
 	delete[]piv;
 	std::cout << getf2.info();
 //	std::cout << A;
+	LCPP::GETRS<double> getrs;
+	LCPP::TRSM<double> trsm;
 }
 
